@@ -1,0 +1,25 @@
+{
+  "name": "news-explorer-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meidankaye/news-explorer-api.git"
+  },
+  "author": "Meidan Kaye",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meidankaye/news-explorer-api/issues"
+  },
+  "homepage": "https://github.com/meidankaye/news-explorer-api#readme",
+  "devDependencies": {
+    "eslint": "^8.20.0",
+    "nodemon": "^2.0.19"
+  }
+}

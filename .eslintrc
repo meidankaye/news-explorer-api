@@ -1,0 +1,15 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "linebreak-style": "off",
+    "no-template-curly-in-string": "off",
+    "no-console": "off",
+    "no-underscore-dangle": "off",
+    "import/newline-after-import": "off",
+    "eol-last": "off",
+    "no-trailing-spaces": "off",
+    "max-len": "off",
+    "function-paren-newline": "off",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
+  }
+}
