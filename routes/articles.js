@@ -15,7 +15,7 @@ function validateUrl(string) {
   return string;
 }
 
-router.get('articles', auth, getArticles);
+router.get('/articles', auth, getArticles);
 
 router.post(
   '/articles',
