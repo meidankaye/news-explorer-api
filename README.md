@@ -1,1 +1,1 @@
-# news-explorer-api
+API: https://api.meidankaye.students.nomoredomainssbs.ru
