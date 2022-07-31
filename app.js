@@ -27,11 +27,12 @@ app.use(requestLogger);
 
 app.use('/', mainRouter);
 
+app.use(errorLogger);
+
 app.use('*', (req, res, next) => {
   next(new NotFoundError('Requested resource was not found.'));
 });
 
-app.use(errorLogger);
 app.use(errors());
 app.use(centralerrorhandler);
 
