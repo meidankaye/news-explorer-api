@@ -25,7 +25,7 @@ const createArticle = (req, res, next) => {
 const deleteArticle = (req, res, next) => {
   Article.findByIdAndRemove(req.params.articleId)
     .orFail(() => {
-      throw new NotFoundError('The requested article was not found');
+      throw new AuthorizationError('The requested article was not found');
     })
     .then((article) => {
       if (article.owner.equals(req.user._id)) res.send(article);

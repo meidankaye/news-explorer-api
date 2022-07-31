@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 const centralerrorhandler = require('./middleware/centralerrorhandler');
+const { MONGODB_URL } = require('./utils/constants');
 const NotFoundError = require('./utils/notfounderror');
 const { limiter } = require('./utils/ratelimiter');
 const mainRouter = require('./routes');
@@ -12,9 +13,9 @@ const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
 
-const { PORT = 3000, NODE_ENV } = process.env;
+const { PORT = 3000, NODE_ENV, MONGODB = MONGODB_URL } = process.env;
 
-mongoose.connect('mongodb://localhost:27017/newsexplorer');
+mongoose.connect(MONGODB);
 
 app.use(limiter);
 app.use(cors());

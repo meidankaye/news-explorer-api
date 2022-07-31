@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ConflictError = require('../utils/conflicterror');
 const AuthorizationError = require('../utils/autherror');
-const NotFoundError = require('../utils/notfounderror');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 
@@ -40,7 +39,7 @@ const login = (req, res, next) => {
     .select('name')
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('User not found.');
+        throw new AuthorizationError('User not found.');
       }
       bcrypt.compare(password, user.password).then((match) => {
         if (!match) {
