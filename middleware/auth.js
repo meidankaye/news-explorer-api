@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const AuthorizationError = require('../utils/autherror');
 const { FORBIDDEN } = require('../utils/httpstatuscodes');
