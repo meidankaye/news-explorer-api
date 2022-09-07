@@ -7,7 +7,10 @@ const getArticles = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Article list is empty.');
     })
-    .then((articles) => res.send(articles))
+    .select('+owner')
+    .then((articles) => {
+      res.send(articles.filter((article) => article.owner === req.user._id));
+    })
     .catch(next);
 };
 
@@ -15,6 +18,8 @@ const createArticle = (req, res, next) => {
   const {
     keyword, title, text, date, source, link, image,
   } = req.body;
+  const owner = req.user._id;
+
   Article.create({
     keyword,
     title,
@@ -23,24 +28,40 @@ const createArticle = (req, res, next) => {
     source,
     link,
     image,
-    owner: req.user._id,
+    owner,
   })
     .then((article) => res.send(article))
     .catch(next);
 };
 
 const deleteArticle = (req, res, next) => {
-  Article.findByIdAndRemove(req.params.articleId)
-    .orFail(() => {
-      throw new AuthorizationError('The requested article was not found');
-    })
+  Article.findOne({ _id: req.params.articleId })
+    .select('+owner')
     .then((article) => {
-      if (article.owner.equals(req.user._id)) res.send(article);
-      else {
+      if (!article) {
+        throw new NotFoundError('The requested article was not found');
+      }
+      if (article.owner.toString() !== req.user._id) {
         throw new AuthorizationError(
           'You cannot delete articles that does not belong to you.',
         );
       }
+      return Article.findOneAndDelete(req.params.articleId)
+        .then((deletedArticle) => {
+          const {
+            keyword, date, text, title, source, link, image,
+          } = deletedArticle;
+          res.send({
+            keyword,
+            date,
+            text,
+            title,
+            source,
+            link,
+            image,
+          });
+        })
+        .catch(next);
     })
     .catch(next);
 };
