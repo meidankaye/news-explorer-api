@@ -7,7 +7,7 @@ const getArticles = (req, res, next) => {
     .select('+owner')
     .then((articles) => {
       const filteredArticles = articles.filter(
-        (item) => item.owner.toString() === req.user._id,
+        (item) => item.owner.toHexString() === req.user._id,
       );
       res.send(filteredArticles);
       console.log(req.user._id);
