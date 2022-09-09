@@ -4,31 +4,18 @@ const AuthorizationError = require('../utils/autherror');
 
 const getArticles = (req, res, next) => {
   Article.find({})
-    .orFail(() => {
-      throw new NotFoundError('Article list is empty.');
-    })
     .select('+owner')
-    .then((articles) => {
-      res.send(articles.filter((article) => article.owner === req.user._id));
+    .then((articles) => res.send(articles))
+    .catch(() => {
+      throw new NotFoundError('Article list is empty.');
     })
     .catch(next);
 };
 
 const createArticle = (req, res, next) => {
-  const {
-    keyword, title, text, date, source, link, image,
-  } = req.body;
-  const owner = req.user._id;
-
   Article.create({
-    keyword,
-    title,
-    text,
-    date,
-    source,
-    link,
-    image,
-    owner,
+    ...req.body,
+    owner: req.user._id,
   })
     .then((article) => res.send(article))
     .catch(next);
@@ -39,11 +26,13 @@ const deleteArticle = (req, res, next) => {
     .select('+owner')
     .then((article) => {
       if (!article) {
-        throw new NotFoundError('The requested article was not found');
+        next(new NotFoundError('The requested article was not found'));
       }
       if (article.owner.toString() !== req.user._id) {
-        throw new AuthorizationError(
-          'You cannot delete articles that does not belong to you.',
+        next(
+          new AuthorizationError(
+            'You cannot delete articles that does not belong to you.',
+          ),
         );
       }
       return Article.findOneAndDelete(req.params.articleId)
@@ -61,9 +50,9 @@ const deleteArticle = (req, res, next) => {
             image,
           });
         })
-        .catch(next);
+        .catch((err) => next(err));
     })
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports = { getArticles, createArticle, deleteArticle };
