@@ -5,7 +5,13 @@ const AuthorizationError = require('../utils/autherror');
 const getArticles = (req, res, next) => {
   Article.find({})
     .select('+owner')
-    .then((articles) => res.send(articles))
+    .then((articles) => {
+      const filteredArticles = articles.filter(
+        (item) => item.owner.toString() === req.user._id,
+      );
+      res.send(filteredArticles);
+      console.log(req.user._id);
+    })
     .catch(() => {
       throw new NotFoundError('Article list is empty.');
     })
