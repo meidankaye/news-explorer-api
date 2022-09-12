@@ -10,7 +10,6 @@ const getArticles = (req, res, next) => {
         (item) => item.owner.toHexString() === req.user._id,
       );
       res.send(filteredArticles);
-      console.log(req.user._id);
     })
     .catch(() => {
       throw new NotFoundError('Article list is empty.');
