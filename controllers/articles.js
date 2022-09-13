@@ -40,7 +40,7 @@ const deleteArticle = (req, res, next) => {
           ),
         );
       }
-      return Article.findOneAndDelete(req.params.articleId)
+      return Article.findOneAndDelete({ _id: req.params.articleId })
         .then((deletedArticle) => {
           const {
             keyword, date, text, title, source, link, image,
