@@ -30,7 +30,6 @@ const deleteArticle = (req, res, next) => {
   Article.findOne({ _id: req.params.articleId })
     .select('+owner')
     .then((article) => {
-      console.log(article);
       if (!article) {
         next(new NotFoundError('The requested article was not found'));
       }
