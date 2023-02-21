@@ -4,21 +4,26 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
+const corsOptions = require('./config/corsOptions');
 const centralerrorhandler = require('./middleware/centralerrorhandler');
 const { MONGODB_URL } = require('./utils/constants');
 const NotFoundError = require('./utils/notfounderror');
 const { limiter } = require('./utils/ratelimiter');
 const mainRouter = require('./routes');
+const connectDB = require('./config/dbConn');
 const { requestLogger, errorLogger } = require('./middleware/logger');
+
+connectDB();
 
 const app = express();
 
-const { PORT = 3000, NODE_ENV, MONGODB = MONGODB_URL } = process.env;
+const { PORT = 3000, NODE_ENV = MONGODB_URL } = process.env;
 
-mongoose.connect(MONGODB);
+mongoose.set('strictQuery', false);
+// mongoose.connect(MONGODB);
 
 app.use(limiter);
-app.use(cors());
+app.use(cors(corsOptions));
 app.options('*', cors());
 app.use(express.json());
 app.use(helmet());
@@ -36,4 +41,7 @@ app.use('*', (req, res, next) => {
 app.use(errors());
 app.use(centralerrorhandler);
 
-if (NODE_ENV !== 'test') app.listen(PORT);
+mongoose.connection.once('open', () => {
+  console.log('Connected to MongoDB!');
+  if (NODE_ENV !== 'test') app.listen(PORT);
+});
