@@ -4,8 +4,6 @@ const User = require('../models/user');
 const ConflictError = require('../utils/conflicterror');
 const AuthorizationError = require('../utils/autherror');
 
-const { JWT_SECRET, NODE_ENV } = process.env;
-
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -45,7 +43,7 @@ const login = (req, res, next) => {
         if (!match) {
           throw new AuthorizationError('Incorrect email or password.');
         }
-        const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+        const token = jwt.sign({ _id: user._id }, process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
         res.send({ token, name: user.name });
       }).catch(next);
     })
